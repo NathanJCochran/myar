@@ -54,7 +54,7 @@ void a_append(char * arch_name) {
 
 	/* Create new archive file if none exists */
 	if((fd = open(arch_name, O_WRONLY | O_CREAT | O_EXCL, 0666)) != -1 ) {
-		printf("myar: creating %s", arch_name);
+		printf("myar: creating %s\n", arch_name);
 		if ((num_written = write(fd, ARMAG, SARMAG)) != SARMAG) {
 			if (num_written == -1)
 				perror("Error writing archive header to file");
@@ -245,7 +245,7 @@ void q_append(char * arch_name, char * members[], int mem_len) {
 
 	/* Create new archive file if none exists */
 	if((fd = open(arch_name, O_WRONLY | O_CREAT | O_EXCL, 0666)) != -1 ) {
-		printf("myar: creating %s", arch_name);
+		printf("myar: creating %s\n", arch_name);
 		if ((num_written = write(fd, ARMAG, SARMAG)) != SARMAG) {
 			if (num_written == -1)
 				perror("Error writing archive header to file");
