@@ -23,7 +23,7 @@ clean:
 tests: testq testt testv
 
 cleantests:
-	rm -f ar12345.ar myar12345.ar ar135.ar myar135.ar ar24.ar myar24.ar ar-ctoc.txt myar.ctoc.txt ar-vtoc.txt myar-vtoc.txt
+	rm -f ar12345.ar myar12345.ar ar135.ar myar135.ar ar24.ar myar24.ar ar-ctoc.txt myar-ctoc.txt ar-vtoc.txt myar-vtoc.txt
 
 testq: testq12345 testq135 testq24
 
