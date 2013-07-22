@@ -1,3 +1,8 @@
+/* * * * * * * * * * * * * * * * *
+ * myar.c
+ * Author: Nathan Cochran
+ * Date: 7/21/2013
+ * * * * * * * * * * * * * * * * */
 #include "myar.h"
 
 int main(int argc, char * argv[]) {
@@ -36,6 +41,11 @@ int main(int argc, char * argv[]) {
 	return 0;
 }
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Appends all regular files in the current directory to the archive
+ * Param:   char * arch_name -  Name of the archive
+ * Return:  void
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void a_append(char * arch_name) {
 	int fd, num_written;
 	char cwd[4096];
@@ -87,6 +97,13 @@ void a_append(char * arch_name) {
 
 
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Deletes the first instance of the specified member files from the archive
+ * Param:   char * arch_name -  Name of the archive
+ * Param:   char * members[] -  Names of the member files to delete
+ * Param:   int mem_len -  Length of the members array
+ * Return:  void
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void d_delete(char * arch_name, char * members[], int mem_len) {
 	int fd, num_written;
 	struct ar_file * archfile;
@@ -140,6 +157,13 @@ void d_delete(char * arch_name, char * members[], int mem_len) {
 	close(fd);
 }
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Extracts the specified member files from the archive, or, if no members are specified, extracts all
+ * Param:   char * arch_name -  Name of the archive
+ * Param:   char * members[] -  Names of the member files to extract
+ * Param:   int mem_len -  Length of the members array
+ * Return:  void
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void x_extract(char * arch_name, char * members[], int mem_len) {
 	struct ar_file * archfile;
 	struct arch_itr * itr = create_arch_itr(arch_name);
@@ -165,6 +189,11 @@ void x_extract(char * arch_name, char * members[], int mem_len) {
 	free_arch_itr(itr);
 }
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Prints a verbose table of contents for the specified archive
+ * Param:   char * arch_name -  Name of the archive
+ * Return:  void
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void v_contents(char * arch_name) {
 	struct ar_file * archfile;
 	struct arch_itr * itr = create_arch_itr(arch_name);
@@ -185,6 +214,11 @@ void v_contents(char * arch_name) {
 	free_arch_itr(itr);
 }
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Prints a table of contents for the specified archive
+ * Param:   char * arch_name -  Name of the archive
+ * Return:  void
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void t_contents(char * arch_name) {
 	struct ar_file * archfile;
 	struct arch_itr * itr = create_arch_itr(arch_name);
@@ -199,6 +233,13 @@ void t_contents(char * arch_name) {
 	free_arch_itr(itr);
 }
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Appends the specified member files to the archive
+ * Param:   char * arch_name -  Name of the archive
+ * Param:   char * members[] -  Names of the files to append
+ * Param:   int mem_len -  Length of the members array
+ * Return:  void
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void q_append(char * arch_name, char * members[], int mem_len) {
 	int fd, num_written, i;
 

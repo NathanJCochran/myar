@@ -1,5 +1,16 @@
+/* * * * * * * * * * * * * * * * *
+ * arch_itr.c
+ * Author: Nathan Cochran
+ * Date: 7/21/2013
+ * * * * * * * * * * * * * * * * */
+
 #include "arch_itr.h"
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Creates an archive iterator for the specified archive
+ * Param:   char * archive_name -  Name of archive
+ * Return:  struct arch_itr * -  Pointer to the archive iterator
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 struct arch_itr * create_arch_itr(char * archive_name) {
 	struct arch_itr * itr = (struct arch_itr *) malloc(sizeof(struct arch_itr));
 	init_arch_itr(itr);
@@ -19,6 +30,11 @@ struct arch_itr * create_arch_itr(char * archive_name) {
 	return itr;
 }
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Initialize the fields of the archive iterator
+ * Param:   struct arch_itr * itr -  Iterator to initialize
+ * Return:  void
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void init_arch_itr(struct arch_itr * itr) {
 	itr->header = (struct ar_hdr *) malloc(sizeof(struct ar_hdr));
 	itr->archfile = (struct ar_file *) malloc(sizeof(struct ar_file));
@@ -28,6 +44,11 @@ void init_arch_itr(struct arch_itr * itr) {
 	}
 }
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Free the memory allocated to the archive iterator
+ * Param:   struct arch_itr * itr -  Iterator to free
+ * Return:  void
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void free_arch_itr(struct arch_itr * itr) {
 	if(close(itr->fd) == -1) {
 		perror("Error closing archive file");
@@ -38,6 +59,11 @@ void free_arch_itr(struct arch_itr * itr) {
 	free(itr);
 }
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Returns true if the iterator has a next file, advances the offset associated with the fd for the archive
+ * Param:   struct arch_itr * itr -  Iterator to check
+ * Return:  bool -  True if the archive has a next file
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 bool hasNextFile(struct arch_itr * itr) {
 
 	/* If there is another file header */
@@ -59,10 +85,20 @@ bool hasNextFile(struct arch_itr * itr) {
 	}
 }
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Returns an ar_file struct containing info on the next archive in the file
+ * Param:   struct arch_itr * itr -  Iterator to get next file from
+ * Return:  struct ar_file * -  Contains information on the next file in the archive
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 struct ar_file * nextFile(struct arch_itr * itr) {
 	return itr->archfile;
 }
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Extracts the "current" file from the archive
+ * Param:   struct arch_itr * itr -  Iterator to extract current file from
+ * Return:  void
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void extractFile(struct arch_itr * itr) {
 	int fd;
 	unsigned long mode;
@@ -93,6 +129,12 @@ void extractFile(struct arch_itr * itr) {
 	}
 }
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Writes the current file header to the file specified by the open file descriptor fd
+ * Param:   struct arch_itr * itr -  Iterator to write from
+ * Param:   int fd -  Open file descriptor of file to write to
+ * Return:  void
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void write_file_header_to(struct arch_itr * itr, int fd) {
 	if(write(fd, (void *) itr->header, sizeof(struct ar_hdr)) == -1) {
 		perror("Error writing file header");
@@ -100,6 +142,12 @@ void write_file_header_to(struct arch_itr * itr, int fd) {
 	}
 }
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Write the current file's contents to the file specified by the open file descriptor fd
+ * Param:   struct arch_itr * itr -  Iterator to write from
+ * Param:   int fd -  Open file descriptor of file to write to
+ * Return:  void
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void write_file_contents_to(struct arch_itr * itr, int fd) {
 	char c;
 
@@ -131,6 +179,11 @@ void write_file_contents_to(struct arch_itr * itr, int fd) {
 	}
 }
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Takes a string representing the size of a file, returns the number of bytes to seek to the next file header in the archive
+ * Param:   char * size -  String representing the size of the current file
+ * Return:  long -  The number of bytes to seek past to get to the next file header
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 long get_offset(char * size) {
 	long bytes;
 	bytes = strtoul(size, NULL, 10);
@@ -139,6 +192,12 @@ long get_offset(char * size) {
 	return bytes;
 }
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Reads the next file header into the specified ar_hdr struct, returning true on success, false if no header was found (end of archive reached)
+ * Param:   int fd -  File descriptor for the archive
+ * Param:   struct ar_hdr * header -  Header struct to read into (NOTE: the fields of this struct are not null-terminated!)
+ * Return:  bool -  True if header was successfully read in, false if end of file reached
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 bool get_header(int fd, struct ar_hdr * header) {
     int num_read = read(fd, (void *) header, sizeof(struct ar_hdr));
 
@@ -155,6 +214,12 @@ bool get_header(int fd, struct ar_hdr * header) {
     }
 }
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Takes an ar_hdr struct (which cannot be used as is) and converts it to an ar_file
+ * Param:   struct ar_hdr * header -  ar_hdr struct containing the header of a file in the archive
+ * Param:   struct ar_file * ret -  Contains the same information, but wih null-terminated strings and no whitespace
+ * Return:  void
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void get_archfile(struct ar_hdr * header, struct ar_file * ret) {
         
     get_hdr_field(header->ar_name, sizeof(header->ar_name), ret->name);
@@ -166,6 +231,13 @@ void get_archfile(struct ar_hdr * header, struct ar_file * ret) {
     get_hdr_field(header->ar_fmag, sizeof(header->ar_fmag), ret->fmag);
 }
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Takes a field of a given length and copies the information into buf (null-terminated, no whitespace)
+ * Param:   char * hdr_field -  ar_hdr field to get information from
+ * Param:   int len -  Length of the character array
+ * Param:   char * buf -  Output parameter - the ar_hdr field's info will be copied here
+ * Return:  void
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void get_hdr_field(char * hdr_field, int len, char * buf) {
     int i;
     int j=0;

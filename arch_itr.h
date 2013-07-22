@@ -1,3 +1,9 @@
+/* * * * * * * * * * * * * * * * *
+ * arch_itr.h
+ * Author: Nathan Cochran
+ * Date: 7/21/2013
+ * * * * * * * * * * * * * * * * */
+
 #include <stdbool.h>
 #include <utime.h>
 #include <sys/types.h>

@@ -1,5 +1,16 @@
+/* * * * * * * * * * * * * * * * *
+ * arch_util.c
+ * Author: Nathan Cochran
+ * Date: 7/21/2013
+ * * * * * * * * * * * * * * * * */
 #include "arch_util.h"
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Gets option from the command line and returns the corresponding character
+ * Param:   int argc -  Number of arguments in argv
+ * Param:   char* argv[] -  array of command line arguments
+ * Return:  char -  Character representing the option chosen
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 char get_arch_opt(int argc, char* argv[]) {
 
 	/* Ensure that an option was specified */
@@ -22,6 +33,13 @@ char get_arch_opt(int argc, char* argv[]) {
     exit(0);
 }
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Get the name of the archive specified on the command line
+ * Param:   int argc -  Number of arguments in argv
+ * Param:   char * argv[] -  Array of command line arguments
+ * Param:   char * arch_name -  Output parameter - archive name will be stored here
+ * Return:  void
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void get_arch_name(int argc, char * argv[], char * arch_name) {
 
 	/* Ensure that an archive was specified */
@@ -34,6 +52,13 @@ void get_arch_name(int argc, char * argv[], char * arch_name) {
 	strcpy(arch_name, argv[2]);
 }
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Get the names of the member files specified on the command line
+ * Param:   int argc -  Number of arguments in argv
+ * Param:   char * argv[] -  Array of command line arguments
+ * Param:   char * members[] -  Output parameter - names of members will be stored here
+ * Return:  void
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void get_members(int argc, char * argv[], char * members[]) {
     int i;
 
@@ -45,6 +70,12 @@ void get_members(int argc, char * argv[], char * members[]) {
     }   
 }
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Frees the array of member names allocated in get_members()
+ * Param:   char * members[] -  Array of member names to free
+ * Param:   int mem_len -  Length of members array
+ * Return:  void
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void free_members(char * members[], int mem_len) {
     int i;
     for (i=0; i<mem_len; i++) {
@@ -54,6 +85,13 @@ void free_members(char * members[], int mem_len) {
     }   
 }
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Determine if a given file name is a member
+ * Param:   char * name -  Name to check
+ * Param:   char * members[] -  List of members
+ * Param:   int mem_len -  Length of members array
+ * Return:  bool -  True if name is a member
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 bool is_member(char * name, char * members[], int mem_len) {
     int i;
     for (i=0; i<mem_len; i++) {
@@ -64,6 +102,13 @@ bool is_member(char * name, char * members[], int mem_len) {
     return false;
 }
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Removes a given member from the list of members, and frees the associated space
+ * Param:   char * name -  Name of member to remove
+ * Param:   char * members[] -  List of members to remove from
+ * Param:   int mem_len -  Length of members array
+ * Return:  void
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void remove_member(char * name, char * members[], int mem_len) {
     int i;
     for (i=0; i<mem_len; i++) {
@@ -74,6 +119,11 @@ void remove_member(char * name, char * members[], int mem_len) {
     }
 }
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Prints the date represented in date_str (seconds since epoch) in MTH DAY HH:MM YEAR format
+ * Param:   char * date_str -  String containing seconds since epoch
+ * Return:  void
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void print_date(char * date_str) {
     long timep;
     char time_str[20];
@@ -92,6 +142,11 @@ void print_date(char * date_str) {
     printf("%s ", time_str);
 }
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Print the permissions in mode_str (octal number) in "rwxrwxrwx" format
+ * Param:   char * mode_str -  String containing octal number
+ * Return:  void
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void print_perms(char * mode_str) {
 	unsigned long mode;
     char perms[10];
@@ -124,6 +179,12 @@ void print_perms(char * mode_str) {
     printf("%s ", perms);
 }
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Append the specified member file to the archive
+ * Param:   char * arch_name -  Name of the archive
+ * Param:   char * member -  Name of the member to append
+ * Return:  void
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void append_to_arch(char * arch_name, char * member) {
 	int arch_fd, mem_fd, num_read, len;
 	struct stat stat_info;

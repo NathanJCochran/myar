@@ -22,6 +22,9 @@ clean:
 
 tests: testq testt testv
 
+cleantests:
+	rm -f ar12345.ar myar12345.ar ar135.ar myar135.ar ar24.ar myar24.ar
+
 testq: testq12345 testq135 testq24
 
 testq12345:
