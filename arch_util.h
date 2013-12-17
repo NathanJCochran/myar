@@ -21,6 +21,7 @@
 #ifndef arch_util_h
 #define arch_util_h
 
+void print_usage(char * prog_name);
 char get_arch_opt(int argc, char *argv[]);
 void get_arch_name(int argc, char *argv[], char * arch_name);
 void get_members(int argc, char *argv[], char *members[]);

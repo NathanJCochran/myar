@@ -6,6 +6,22 @@
 #include "arch_util.h"
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Print usage information for the program
+ * Param:   char * prog_name -  Name of the program
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void print_usage(char * prog_name) {
+    printf("\nUsage: %s {-q|-A|-x|-d|-t|-v} <archive file> [member files...]\n", prog_name);
+    printf("\tOptions:\n");
+    printf("\t-q - Quickly append the specified member files to the archive.\n");
+    printf("\t-A - Append all files in the current directory to the archive\n");
+    printf("\t-x - Extract the specified member files from the archive. If no member files are specified, extract all.\n");
+    printf("\t-d - Delete the first instance of the specified member files from the archive\n");
+    printf("\t-t - Display a table of contents for the archive\n");
+    printf("\t-v - Display a verbose table of contents for the archive\n");
+    printf("\t \n");
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Gets option from the command line and returns the corresponding character
  * Param:   int argc -  Number of arguments in argv
  * Param:   char* argv[] -  array of command line arguments
@@ -16,6 +32,7 @@ char get_arch_opt(int argc, char* argv[]) {
 	/* Ensure that an option was specified */
     if(argc < 2) {
         printf("Error: No option provided.\n");
+        print_usage(argv[0]);
         exit(0);
     }
 
@@ -45,6 +62,7 @@ void get_arch_name(int argc, char * argv[], char * arch_name) {
 	/* Ensure that an archive was specified */
     if(argc < 3) {
         printf("Error: No archive specified.\n");
+        print_usage(argv[0]);
         exit(0);
     }
 

@@ -32,9 +32,9 @@ int main(int argc, char * argv[]) {
 		case 'A':
 			a_append(arch_name);
 			break;
-		case 'w':
-			/* Not currently implemented */
-			break;
+        default:
+            print_usage(argv[0]);
+            exit(EXIT_SUCCESS);
 	}
 
 	free_members(members, mem_len);
